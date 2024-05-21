@@ -14,8 +14,10 @@ WATCHED_DIR = os.getenv('WATCHED_DIR')
 API_URL = os.getenv('API_URL')
 LAABS_AUTH = os.getenv('LAABS_AUTH')
 ARCHIVAL_PROFILE_REFERENCE = os.getenv('ARCHIVAL_PROFILE_REFERENCE')
+SERVICE_LEVEL_REFERENCE = os.getenv('SERVICE_LEVEL_REFERENCE')
+RETENTION_RULE_CODE = os.getenv('RETENTION_RULE_CODE')
 DESCRIPTION_CLASS = os.getenv('DESCRIPTION_CLASS')
-FULL_TEXT_INDEXATION = os.getenv('FULL_TEXT_INDEXATION')
+FULL_TEXT_INDEXATION = os.getenv('FULL_TEXT_INDEXATION','none')
 DESCRIPTION_LEVEL = os.getenv('DESCRIPTION_LEVEL')
 KEYWORD_CONTENT = os.getenv('KEYWORD_CONTENT')
 LANGUAGE = os.getenv('LANGUAGE')
@@ -79,7 +81,7 @@ class Watcher(FileSystemEventHandler):
             data = self.create_api_data()
             response = requests.post(API_URL, json=data, headers=headers)
             if response.status_code == 200:
-                print("Data sent successfully.")
+                print(f"Data sent successfully. {response}")
                 self.pending_files = []
             else:
                 print(f"Error {response} sending data.")
@@ -89,22 +91,62 @@ class Watcher(FileSystemEventHandler):
         archive_name = os.path.basename(WATCHED_DIR)
         data = {
             "archive": {
-                "digitalResources": self.pending_files
+                "digitalResources":self.pending_files,
+                "archiveName": archive_name,
+                "archivalProfileReference": ARCHIVAL_PROFILE_REFERENCE,
+                "serviceLevelReference": SERVICE_LEVEL_REFERENCE,
+                "retentionRuleCode": RETENTION_RULE_CODE,
+                "retentionStartDate": "2018-01-01",
+                "retentionDuration": "P10Y",
+                "finalDisposition": "preservation",
+                "disposalDate": "2028-01-01",
+                "retentionRuleStatus": None,
+                "accessRuleCode": "AR039",
+                "accessRuleDuration": "P25Y",
+                "accessRuleStartDate": "2007-01-01",
+                "accessRuleComDate": "2032-01-01",
+                "classificationRuleCode": None,
+                "classificationRuleDuration": None,
+                "classificationRuleStartDate": None,
+                "classificationEndDate": None,
+                "classificationLevel": None,
+                "classificationOwner": None,
+                "userOrgRegNumbers": None,
+                "depositDate": "2024-02-15T10:53:59.000Z",
+                "lastCheckDate": None,
+                "lastDeliveryDate": None,
+                "lastModificationDate": None,
+                "status": "preserved",
+                "description": {
+                    "title": [
+                        archive_name
+                    ],
+                    "keyword": [
+                        {
+                            "keywordType": "corpname",
+                            "keywordContent": "API"
+                        }
+                    ],
+                    "language": [
+                        "fra"
+                    ],
+                    "sentDate": "2000-12-23",
+                    "documentType": "Facture",
+                    "descriptionLevel": "Item",
+                    "filePlanPosition": [
+                        "2020/Janvier"
+                    ]
+
+                },
+                "fullTextIndexation": "none",
+                "descriptionClass": DESCRIPTION_CLASS,
+                "fileplanLevel": "item",
+                "processingStatus": None,
+                "parentArchiveId": None
+
+
             },
-            "description": {
-                "title": [archive_name],
-                "keyword": [{
-                    "keywordType": "corpname",
-                    "keywordContent": KEYWORD_CONTENT
-                }],
-                "language": [LANGUAGE],
-                "description": "",
-                "documentType": "",
-            },
-            "archiveName": archive_name,
-            "archivalProfileReference": ARCHIVAL_PROFILE_REFERENCE,
-            "fullTextIndexation": FULL_TEXT_INDEXATION,
-            "descriptionClass": DESCRIPTION_CLASS
+            "zipContainer": False
         }
         return data
 
