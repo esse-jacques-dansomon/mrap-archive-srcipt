@@ -19,8 +19,6 @@ RETENTION_RULE_CODE = os.getenv('RETENTION_RULE_CODE')
 DESCRIPTION_CLASS = os.getenv('DESCRIPTION_CLASS')
 FULL_TEXT_INDEXATION = os.getenv('FULL_TEXT_INDEXATION','none')
 DESCRIPTION_LEVEL = os.getenv('DESCRIPTION_LEVEL')
-KEYWORD_CONTENT = os.getenv('KEYWORD_CONTENT')
-LANGUAGE = os.getenv('LANGUAGE')
 
 class Watcher(FileSystemEventHandler):
     def __init__(self):
@@ -139,7 +137,7 @@ class Watcher(FileSystemEventHandler):
 
                 },
                 "fullTextIndexation": "none",
-                "descriptionClass": DESCRIPTION_CLASS,
+                "descriptionClass": "seda2",
                 "fileplanLevel": "item",
                 "processingStatus": None,
                 "parentArchiveId": None
