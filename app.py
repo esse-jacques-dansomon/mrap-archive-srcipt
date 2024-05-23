@@ -136,11 +136,11 @@ class Watcher(FileSystemEventHandler):
                 "mimetype": mimetype
             }
             self.pending_files.append(file_data)
-            self.send_pending_files()
+            self.send_pending_files(file_name)
         except Exception as e:
             print(f"Error adding file to pending list: {e}")
 
-    def send_pending_files(self):
+    def send_pending_files(self, file_name):
         headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ class Watcher(FileSystemEventHandler):
         """Send pending files to API."""
         if len(self.pending_files) > 0:
             try:
-                data = self.create_api_data()
+                data = self.create_api_data(file_name)
                 response = requests.post(API_URL, json=data, headers=headers)
                 if response.status_code == 200:
                     print(f"Data sent successfully. {response}")
@@ -161,10 +161,10 @@ class Watcher(FileSystemEventHandler):
             except Exception as e:
                 print(f"Exception while sending data to API: {e}")
 
-    def create_api_data(self):
+    def create_api_data(self, file_name):
         """Create data for API request."""
         try:
-            archive_name = os.path.basename(WATCHED_DIR)
+            archive_name = file_name
             data = {
                 "archive": {
                     "digitalResources": self.pending_files,
