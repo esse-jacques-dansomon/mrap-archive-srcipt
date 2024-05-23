@@ -47,6 +47,17 @@ def copy_to_temp(file_path):
         print(f"Error copying file to temp directory: {e}")
 
 
+def get_custom_file_name(file_path):
+    """Generate custom file name based on directory and file name."""
+    try:
+        directory = os.path.basename(os.path.dirname(file_path))
+        file_name = os.path.splitext(os.path.basename(file_path))[0]
+        return f"{file_name}"
+    except Exception as e:
+        print(f"Error generating custom file name: {e}")
+        return os.path.basename(file_path)
+
+
 def clean_temp_dir():
     """Clean the temporary directory by removing all files."""
     try:
@@ -113,8 +124,11 @@ class Watcher(FileSystemEventHandler):
     def add_file_to_pending(self, file_path, encoded_content):
         """Add file data to pending list."""
         try:
-            file_name = os.path.basename(file_path)
+            print(f"file : {file_path}")
+            # file_name = os.path.basename(file_path)
+            file_name = get_custom_file_name(file_path)
             mimetype = self.get_mimetype(file_path)
+            print(f"file_name {file_name}")
             file_data = {
                 "handler": encoded_content,
                 "size": str(os.path.getsize(file_path)),
@@ -137,7 +151,8 @@ class Watcher(FileSystemEventHandler):
         if len(self.pending_files) > 0:
             try:
                 data = self.create_api_data()
-                response = requests.post(API_URL, json=data, headers=headers)
+                return
+                # response = requests.post(API_URL, json=data, headers=headers)
                 if response.status_code == 200:
                     print(f"Data sent successfully. {response}")
                     self.pending_files = []

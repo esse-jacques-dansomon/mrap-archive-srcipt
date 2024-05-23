@@ -17,8 +17,9 @@ ARCHIVAL_PROFILE_REFERENCE = os.getenv('ARCHIVAL_PROFILE_REFERENCE')
 SERVICE_LEVEL_REFERENCE = os.getenv('SERVICE_LEVEL_REFERENCE')
 RETENTION_RULE_CODE = os.getenv('RETENTION_RULE_CODE')
 DESCRIPTION_CLASS = os.getenv('DESCRIPTION_CLASS')
-FULL_TEXT_INDEXATION = os.getenv('FULL_TEXT_INDEXATION','none')
+FULL_TEXT_INDEXATION = os.getenv('FULL_TEXT_INDEXATION', 'none')
 DESCRIPTION_LEVEL = os.getenv('DESCRIPTION_LEVEL')
+
 
 class Watcher(FileSystemEventHandler):
     def __init__(self):
@@ -89,7 +90,7 @@ class Watcher(FileSystemEventHandler):
         archive_name = os.path.basename(WATCHED_DIR)
         data = {
             "archive": {
-                "digitalResources":self.pending_files,
+                "digitalResources": self.pending_files,
                 "archiveName": archive_name,
                 "archivalProfileReference": ARCHIVAL_PROFILE_REFERENCE,
                 "serviceLevelReference": SERVICE_LEVEL_REFERENCE,
@@ -142,7 +143,6 @@ class Watcher(FileSystemEventHandler):
                 "processingStatus": None,
                 "parentArchiveId": None
 
-
             },
             "zipContainer": False
         }
@@ -154,6 +154,7 @@ class Watcher(FileSystemEventHandler):
         import mimetypes
         mimetype, _ = mimetypes.guess_type(file_path)
         return mimetype if mimetype else "application/octet-stream"
+
 
 if __name__ == "__main__":
     event_handler = Watcher()
