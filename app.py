@@ -151,8 +151,7 @@ class Watcher(FileSystemEventHandler):
         if len(self.pending_files) > 0:
             try:
                 data = self.create_api_data()
-                return
-                # response = requests.post(API_URL, json=data, headers=headers)
+                response = requests.post(API_URL, json=data, headers=headers)
                 if response.status_code == 200:
                     print(f"Data sent successfully. {response}")
                     self.pending_files = []
