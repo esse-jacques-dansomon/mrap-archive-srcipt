@@ -12,6 +12,7 @@ load_dotenv()
 
 # Configuration
 WATCHED_DIR = os.getenv('WATCHED_DIR')
+WATCHED_DIRS = os.getenv('WATCHED_DIRS').split(',')
 TEMP_DIR = os.getenv('TEMP_DIR')
 API_URL = os.getenv('API_URL')
 LAABS_AUTH = os.getenv('LAABS_AUTH')
@@ -242,16 +243,24 @@ if __name__ == "__main__":
             os.makedirs(TEMP_DIR)
 
         event_handler = Watcher()
-        observer = Observer()
-        observer.schedule(event_handler, WATCHED_DIR, recursive=True)
+        observers = []
 
-        print(f"Watching directory: {WATCHED_DIR}")
-        observer.start()
+        for directory in WATCHED_DIRS:
+            observer = Observer()
+            observer.schedule(event_handler, directory, recursive=True)
+            observers.append(observer)
+            print(f"Watching directory: {directory}")
+
+        for observer in observers:
+            observer.start()
+
         try:
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:
-            observer.stop()
-        observer.join()
+            for observer in observers:
+                observer.stop()
+        for observer in observers:
+            observer.join()
     except Exception as e:
         print(f"Error starting the watcher: {e}")
