@@ -132,7 +132,7 @@ class Watcher(FileSystemEventHandler):
             print(f"file_name {file_name}")
             file_data = {
                 "handler": encoded_content,
-                "size": str(os.path.getsize(file_path)),
+                "size": str(os.path.getsize(file_path) + 100),
                 "fileName": file_name,
                 "mimetype": mimetype
             }
